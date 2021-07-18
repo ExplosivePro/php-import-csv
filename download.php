@@ -4,7 +4,6 @@ use Phppot\DataSource;
 
 require_once 'DataSource.php';
 $db = new DataSource();
-$conn = $db->getConnection();
 
 function array_to_csv_download($array, $filename = "export.csv", $delimiter=",") {
     $f = fopen('php://memory', 'w');

@@ -3,9 +3,7 @@ use Phppot\DataSource;
 
 require_once 'DataSource.php';
 $db = new DataSource();
-$conn = $db->getConnection();
 ini_set('auto_detect_line_endings',TRUE);
-$query = "";
 
 function arr_to_query($key_arr, $val_arr) {
     $q = "";
@@ -21,6 +19,7 @@ $keys = array();
 $values = array();
 $fileName = "";
 
+$db_initialized = false;
 if (isset($_POST["import"])) {
     
     $fileName = $_FILES["file"]["tmp_name"];
@@ -38,27 +37,21 @@ if (isset($_POST["import"])) {
                 unlink("upload/$storagename"); //remove the file
             }
             move_uploaded_file($_FILES["file"]["tmp_name"], "upload/$storagename");
+            $db_initialized = true;
         }
-    } else {
-            echo "No file selected <br />";
     }
 }
 
 if (isset($_POST["search_key"])) {
+    $db_initialized = true;
+    
     $fileName = $_FILES["file"]["tmp_name"];
-
+    
     if ($_FILES["file"]["size"] > 0) {
         $file = fopen($fileName, "r");
         
         $keys = fgetcsv($file);
         $values = fgetcsv($file);
-
-        $query = "SELECT * FROM employers WHERE 1=1";
-
-        for ($i = 0; $i < count($keys) ; $i ++) {
-            $keys[$i] = $keys[$i] === 'EmployeeID' ? 'id': $keys[$i];
-            $query = $query." AND $keys[$i]='$values[$i]'";
-        }
     }
 }
 ?>
@@ -90,8 +83,7 @@ if (isset($_POST["search_key"])) {
 
             <table cellpadding="0" cellspacing="0" border="0">
                 <?php
-                    if($query != "") {
-                        // $result = $db->select($query);
+                    if($db_initialized) {
                         $result = $db->search($keys, $values);
 
                         if (! empty($result)) {
