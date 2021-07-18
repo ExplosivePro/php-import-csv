@@ -30,7 +30,30 @@ class DataSource
             foreach ($key_arr as $i => $key) {
                 $key_id = array_search($key, $keys);
                 
-                $flag = $flag && $values[$key_id] == $val_arr[$i];
+                $flag = $flag && !strcasecmp($values[$key_id], $val_arr[$i]);
+            }
+            if ($flag) {
+                $record = array();
+                array_push($result, $values);
+            }
+
+            $values = fgetcsv($file);
+        }
+        return $result;
+    }
+
+    public function search_by_value($val) {
+        $file = fopen("upload/uploaded_file.csv", "r");
+        
+        $keys = fgetcsv($file);
+
+        $values = fgetcsv($file);
+        $result = array();
+
+        while ($values) {
+            $flag = false;
+            foreach ($values as $value) {  
+                $flag = $flag || !strcasecmp($value, $val) || !$val;
             }
             if ($flag) {
                 $record = array();
@@ -43,6 +66,14 @@ class DataSource
             $values = fgetcsv($file);
         }
         return $result;
+    }
+
+    public function get_columns() {
+        $file = fopen("upload/uploaded_file.csv", "r");
+        
+        $keys = fgetcsv($file);
+
+        return $keys;
     }
 
 }

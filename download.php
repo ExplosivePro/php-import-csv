@@ -21,10 +21,16 @@ function array_to_csv_download($array, $filename = "export.csv", $delimiter=",")
     header('Content-Disposition: attachment; filename="'.$filename.'";');
     fpassthru($f);
 }
-foreach ($_REQUEST as $key => $value) {
-    $query = "SELECT * FROM employers WHERE 1=1";
-    $key = $key === 'EmployeeID' ? 'id': $key;
-    $query = $query." AND $key='$value'";
+
+if (!empty(array_keys( $_REQUEST))) {
+    if (array_key_exists("search", $_REQUEST)) {
+        $search = $_REQUEST["search"];
+        $result = $db->search_by_value($search);
+    } else {
+        $result = $db->search(array_keys( $_REQUEST), array_values( $_REQUEST));
+    }
+
+} else {
+    $result = $db->search_by_value("");
 }
-$result = $db->search(array_keys($_REQUEST), array_values($_REQUEST));
 array_to_csv_download($result);

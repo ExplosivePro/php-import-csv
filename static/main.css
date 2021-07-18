@@ -8,18 +8,19 @@ h1{
     margin-bottom: 15px;
   }
   table{
-    width:100%;
+    min-width: 100%;
     table-layout: fixed;
   }
-  .tbl-header{
-    background-color: rgba(255,255,255,0.3);
-   }
   .tbl-content{
     height:300px;
     overflow-x:auto;
     margin-top: 0px;
     border: 1px solid rgba(255,255,255,0.3);
   }
+  .tbl-content thead{
+    background-color: rgba(255,255,255,0.3);
+  }
+
   th{
     padding: 20px 15px;
     text-align: left;
@@ -106,6 +107,30 @@ h1{
     width: 100px;
 }
 
+.text-right {
+  text-align: right;
+}
+
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.search-button {
+  border: transparent;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100px;
+}
+
+input {
+  border: transparent;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.padding-10 {
+  padding: 10px;
+}
 .pull-right {
     float: right;
 }

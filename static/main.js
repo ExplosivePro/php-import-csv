@@ -26,3 +26,7 @@ function handleChange(event) {
     fake_path = fake_path.length > 13 ? fake_path.substr(0, 10) + "...": fake_path;
     $("#fileSelect")[0].innerText = fake_path;
 }
+
+$('.columns').fSelect();
+$('.fs-label').text();
+var value = [].map.call($('.fs-option.selected'),function(el){return el.dataset.value});
