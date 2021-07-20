@@ -79,6 +79,10 @@ if($db_initialized) {
                         <option value="<?php echo $column;?>"><?php echo $column;?></option>
                     <?php }?>
                 </select>
+<<<<<<< HEAD
+=======
+
+>>>>>>> a589ac354e9938314abdcc9bbd6b725a6176407c
                 <button type="submit" class="search-button">Search</button>
             </form>
         </div>
