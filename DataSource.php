@@ -30,7 +30,7 @@ class DataSource
             foreach ($key_arr as $i => $key) {
                 $key_id = array_search($key, $keys);
                 
-                $flag = $flag && !strcasecmp($values[$key_id], $val_arr[$i]);
+                $flag = $flag && $values[$key_id] == $val_arr[$i];
             }
             if ($flag) {
                 $record = array();
