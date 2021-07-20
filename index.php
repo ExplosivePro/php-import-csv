@@ -17,6 +17,8 @@ function arr_to_query($key_arr, $val_arr) {
 
 $keys = array();
 $values = array();
+$result = array();
+
 $fileName = "";
 
 $db_initialized = false;
@@ -27,7 +29,7 @@ if (isset($_POST["import"])) {
 
         //if there was an error uploading the file
         if ($_FILES["file"]["error"] > 0) {
-            echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
+            // echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
 
         }
         else {
@@ -41,122 +43,118 @@ if (isset($_POST["import"])) {
         }
     }
 }
-
-if (isset($_POST["search_key"])) {
+$search = "";
+if (isset($_POST["search_str"])) {
     $db_initialized = true;
-    
-    $fileName = $_FILES["file"]["tmp_name"];
-    
-    if ($_FILES["file"]["size"] > 0) {
-        $file = fopen($fileName, "r");
-        
-        $keys = fgetcsv($file);
-        $values = fgetcsv($file);
-    }
+    $search = array_key_exists('search_str', $_POST) ? $_POST["search_str"]: "";
+}
+
+$numeric_keys = array();
+if(array_key_exists('columns', $_POST)) {
+    $numeric_keys = $_POST["columns"];
+}
+
+if($db_initialized) {
+    $file = fopen("upload/uploaded_file.csv", "r");
+    $keys = fgetcsv($file);
 }
 ?>
 <!DOCTYPE html>
 <html>
 
     <head>
-        
         <link rel="stylesheet" type="text/css" href="static/main.css">
+        <link rel="stylesheet" type="text/css" href="static/fSelect.css">
     </head>
 
     <body>
-        <h1>Search based on the Column names in the Csv</h1>        
-        <div class="tbl-header">
+        <h1>Search based on the Column names in the Csv</h1>
+        <div class="text-right m-b-10">
+            <form class="form-search" method="post">
+                <input type="text" name="search_str" value="<?php echo $search;?>"/>
+                
+                <select class="columns" multiple="multiple" name="columns[]">
+                    <?php foreach($keys as $k => $column) {
+                    ?>
+                        <option value="<?php echo $column;?>"><?php echo $column;?></option>
+                    <?php }?>
+                </select>
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+        <div class="tbl-content">
             <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr class="row100 head">
-                        <th class="cell100 column1">Employee ID</th>
-                        <th class="cell100 column2">User Name</th>
-                        <th class="cell100 column3">Department</th>
-                        <th class="cell100 column4">Mail</th>
-                        <th class="cell100 column5">DptCode</th>
-                        <th class="cell100 column6">License</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <div class="tbl-content">
-
-            <table cellpadding="0" cellspacing="0" border="0">
-                <?php
+                    <?php
+                    $columns = array();
                     if($db_initialized) {
-                        $result = $db->search($keys, $values);
+                        $columns =$db->get_columns();
+                        if (!empty($columns)) {
 
-                        if (! empty($result)) {
-                ?>
-                <tbody>
-                    <?php foreach ($result as $row) { ?>
-                    <tr>
-                        <td><?php  echo $row['id']; ?></td>
-                        <td><?php  echo $row['UserName']; ?></td>
-                        <td><?php  echo $row['Department']; ?></td>
-                        <td><?php  echo $row['Mail']; ?></td>
-                        <td><?php  echo $row['DepartmentCode']; ?></td>
-                        <td><?php  echo $row['PrimaryLicense']; ?></td>
+                            foreach($columns as $i => $column) {
+                                echo "<th class='cell100 column$i'>$column</th>";
+                            }
+                        }
+                    }
+                    ?>
                     </tr>
-                    <?php } ?>
-                </tbody>
-                <?php 
-                    } else {
-                ?>
+                </thead>   
                 <tbody>
-                    <tr>
-                        <td colspan="6" style="text-align: center">No Data</td>
-                    </tr>
                 </tbody>
-            <?php 
-                } 
-            }
-            ?>
             </table>
         </div>
         <div>
-            <form class="form-horizontal" action="" method="post"
-                name="searchCsv" id="searchCsv"
-                enctype="multipart/form-data">
-                <div class="input-row pull-right">
-                    <label class="button">
-                        <input type="file" name="file" id="searchFile" accept=".csv" onchange="handleChange(event)">
-                        <span id="fileSelect">
-                            Select Csv
-                        </span>
-                    </label>
-                    <button type="submit" id="submit" name="search_key" class="button">
-                        <?php 
-                            if(count($keys) != 0) {
-                                echo "Reset";
-                            } else {
-                                echo "Confirm";
-                            }
-                            
-                        ?>
-                    </button>
-                    <br />
-                </div>
-            </form>
             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" style="padding-right: 50px">
                 <div class="input-row pull-right">
 
                     <label class="button">
                         <input type="file" name="file" id="file" />
                         <span id="fileSelect">
-                            Upload Csv
+                            Choose File
                         </span>
 
                     </label>
                     <input class="button" type="submit" name="import" />
                 </div>
             </form>
-            <?php if(count($keys) != 0) {?>
-            <a target="_blank" class="button pull-right" href="download.php<?php echo arr_to_query($keys, $values);?>">Export</a>
+            <?php 
+                if(count($result) != 0) 
+            {?>
+            <a target="_blank" class="button pull-right" href="download.php<?php 
+                
+                $link = "?search=".$search;
+
+                if(!empty($numeric_keys)) {
+                    foreach ($numeric_keys as $key => $value) {
+                        $link = $link."&numerics[]=$value";
+                    }
+                }
+                echo $link;
+            ?>">Export</a>
             <?php } ?>
 
         </div>
+        <script>
+            columns = [
+                <?php foreach ($columns as $key => $value) {
+                ?>
+                    "<?php echo $value?>",
+                <?php
+                }?>
+            ];
+            search = "<?php echo $search;?>";
+            numerics = [
+                <?php foreach ($numeric_keys as $key => $value) {
+                ?>
+                    "<?php echo $value?>",
+                <?php
+                }?>
+            ]
+        </script>
         <script src="static/jquery-3.2.1.min.js"></script>
+        <script src="static/fselect.js"></script>
         <script src="static/main.js"></script>
+        <script src="static/infinite.js"></script>
     </body>
 </html>

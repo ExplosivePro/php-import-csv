@@ -1,0 +1,5 @@
+EmployeeID,Username,DisplayName,GivenName,Surname,Mail,JobTitle,Department,DepartmentCode,LocationCode,PositionCode,DivisonCode,IsSalaried,Country,EmploymentStatus,AccountEnabled,PrimaryLicense,cost
+8754743,aanuoluwapooye@caree.com,Aanu O Oye,Aanuoluwapo,Oye,aanuoluwapo.oye@unifiservice.com,Payroll Manager,Accounting/Finance,AF1,ATG,FN1MGRPY,CORP,TRUE,,Active,TRUE,M365 E5,325
+8763094,abdiazizkhosh@caree.com,Abdiaziz K Khosh,Abdiaziz,Khosh,abdiazizkhosh@unifiservice.com,Intern,Overhead,OVH,ATG,CE1INTER,CORP,FALSE,,Active,TRUE,M365 E5,435
+8777613,Abraham.Oniyide@caree.com,Abraham A Oniyide,Abraham,Oniyide,Abraham.Oniyide@unifiservice.com,Account Manager,Operations,OPS,TXGP,OP2MGRAC,CORP,TRUE,,Active,TRUE,M365 E5,234
+8749410,abrahamarzolasilva@caree.com,Abraham E Arzola Silva,Abraham,Arzola Silva,abrahamarzolasilva@unifiservice.com,Intern,Overhead,OVH,ATG,CE1INTER,CORP,FALSE,US,Active,TRUE,M365 E5,234
